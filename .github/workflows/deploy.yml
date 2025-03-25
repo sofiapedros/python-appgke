@@ -34,7 +34,10 @@ jobs:
         docker build -t $IMAGE_NAME:latest .
         docker push $IMAGE_NAME:$GITHUB_SHA
         docker push $IMAGE_NAME:latest
-
+    - name: Create the cluster
+      run: | 
+        gcloud container clusters create python-appgke-cluster --zone us-central1-a --num-nodes 2
+        gcloud container clusters get-credentials python-appgke-cluster --zone us-central1-a --project  ${{ secrets.GCP_PROJECT_ID }}
     - name: Deploy to GKE
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
